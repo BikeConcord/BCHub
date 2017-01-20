@@ -80,28 +80,46 @@ CREATE TABLE task_hierarchy
   CONSTRAINT task_hierarchy_parent_task_id FOREIGN KEY (parent_task_id) REFERENCES tasks(task_id)  
 );
 
-CREATE TABLE orgs
+CREATE TABLE people_group_types
 (
-  org_id		      int unsigned NOT NULL auto_increment,
+  people_group_type_id		      int unsigned NOT NULL auto_increment,
+  name            varchar(255) NOT NULL,
+  
+  PRIMARY KEY (people_group_type_id)
+);
+
+INSERT INTO people_group_types
+(people_group_type_id, name)
+VALUES
+(1, "Organization"),
+(2, "Informal category");
+
+CREATE TABLE people_groups
+(
+  people_group_id		      int unsigned NOT NULL auto_increment,
   name            varchar(255) NOT NULL,
   short_name      varchar(255),
+  people_group_type_id  int unsigned NOT NULL,
   
-  PRIMARY KEY (org_id)
+  PRIMARY KEY (people_group_id),
+  CONSTRAINT people_groups_people_group_type_id FOREIGN KEY (people_group_type_id) REFERENCES people_group_types(people_group_type_id)
 );
 
 CREATE TABLE user_groups
 (
   user_group_id   int unsigned NOT NULL auto_increment,
   name            varchar(255) NOT NULL,
+  
+  PRIMARY KEY (user_group_id)
 );
 
-CREATE TABLE user_groups_orgs
+CREATE TABLE user_groups_people_groups
 (
   user_group_id           int unsigned NOT NULL,
-  org_id                  int unsigned NOT NULL,
+  people_group_id                  int unsigned NOT NULL,
   
-  CONSTRAINT user_groups_orgs_user_group_id FOREIGN KEY (user_group_id) REFERENCES user_groups(user_group_id),
-  CONSTRAINT user_groups_orgs_org_id FOREIGN KEY (org_id) REFERENCES orgs(org_id)
+  CONSTRAINT user_groups_people_groups_user_group_id FOREIGN KEY (user_group_id) REFERENCES user_groups(user_group_id),
+  CONSTRAINT user_groups_people_groups_people_group_id FOREIGN KEY (people_group_id) REFERENCES people_groups(people_group_id)
 );
 
 CREATE TABLE users_user_groups
@@ -132,41 +150,42 @@ CREATE TABLE users_people
 
 CREATE TABLE roles
 (
-  org_id		      int unsigned NOT NULL,
+  people_group_id		      int unsigned NOT NULL,
   person_id		    int unsigned NOT NULL,
   title           varchar(255) NOT NULL,
   timestamp_start timestamp NOT NULL,
   timestamp_end	  timestamp,
   
-  CONSTRAINT role_org_id FOREIGN KEY (org_id) REFERENCES orgs(org_id),
+  CONSTRAINT role_people_group_id FOREIGN KEY (people_group_id) REFERENCES orgs(people_group_id),
   CONSTRAINT role_person_id FOREIGN KEY (person_id) REFERENCES people(person_id)
 );
 
-CREATE TABLE org_relationship_types
+CREATE TABLE people_group_relationship_types
 (
-  org_relationship_type_id      int unsigned NOT NULL auto_increment,
-  org_relationship_type_desc    varchar(255) NOT NULL,
+  people_group_relationship_type_id      int unsigned NOT NULL auto_increment,
+  people_group_relationship_type_desc    varchar(255) NOT NULL,
   is_reciprocal                 boolean NOT NULL,
   
-  PRIMARY KEY (org_relationship_type_id)
+  PRIMARY KEY (people_group_relationship_type_id)
 );
 
-INSERT INTO org_relationship_types
-(org_relationship_type_id, org_relationship_type_desc, is_reciprocal)
+INSERT INTO people_group_relationship_types
+(people_group_relationship_type_id, people_group_relationship_type_desc, is_reciprocal)
 VALUES
 (1, "Parent organization", 0),
 (2, "Fiscal sponsor", 0),
-(3, "Partner", 1);
+(3, "Partner", 1),
+(4, "Subset");
 
-CREATE TABLE org_relationships
+CREATE TABLE people_group_relationships
 (
-  org1_id		                  int unsigned NOT NULL,
-  org2_id	  	                int unsigned NOT NULL,
-  org_relationship_type_id    int unsigned NOT NULL,
+  people_group1_id		                  int unsigned NOT NULL,
+  people_group2_id	  	                int unsigned NOT NULL,
+  people_group_relationship_type_id    int unsigned NOT NULL,
   
-  CONSTRAINT org_relationships_org1_id FOREIGN KEY (org1_id) REFERENCES orgs(org_id),
-  CONSTRAINT org_relationships_org2_org_id FOREIGN KEY (org2_id) REFERENCES orgs(org_id),
-  CONSTRAINT org_relationships_org_relationship_type_id FOREIGN KEY (org_relationship_type_id) REFERENCES org_relationship_types(org_relationship_type_id)
+  CONSTRAINT people_group_relationships_people_group1_id FOREIGN KEY (people_group1_id) REFERENCES people_groups(people_group_id),
+  CONSTRAINT people_group_relationships_people_group2_people_group_id FOREIGN KEY (people_group2_id) REFERENCES people_groups(people_group_id),
+  CONSTRAINT people_group_relationships_people_group_relationship_type_id FOREIGN KEY (people_group_relationship_type_id) REFERENCES people_group_relationship_types(people_group_relationship_type_id)
 );
 
 CREATE TABLE phone_numbers

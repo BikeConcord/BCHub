@@ -44,21 +44,21 @@ VALUES
 (101, 2),
 (102, 1);
 
-INSERT INTO orgs
-(org_id, name, short_name)
+INSERT INTO people_groups
+(people_group_id, name, short_name)
 VALUES
-(1, "Bike Concord", "Bike Concord"),
-(2, "City of Concord", "City"),
-(3, "Contra Costa Transportation Authority", "CCTA"),
-(4, "Monument Impact", "MI"),
-(5, "First Five Contra Costa", "FFCC"),
-(6, "Central County Regional Group", "CCRG"),
-(7, "Bike East Bay", "BEB"),
-(8, "Contra Costa Health Services", "CCHS"),
-(9, "Advocacy Committee", "AdCom"),
-(10, "Planning Division", "Planning Division"),
-(11, "City Council", "Council"),
-(12, "Leadership Committee", "Leadership");
+(1, "Bike Concord", "Bike Concord", 1),
+(2, "City of Concord", "City", 1),
+(3, "Contra Costa Transportation Authority", "CCTA", 1),
+(4, "Monument Impact", "MI", 1),
+(5, "First Five Contra Costa", "FFCC", 1),
+(6, "Central County Regional Group", "CCRG", 1),
+(7, "Bike East Bay", "BEB", 1),
+(8, "Contra Costa Health Services", "CCHS", 1),
+(9, "Advocacy Committee", "AdCom", 1),
+(10, "Planning Division", "Planning Division", 1),
+(11, "City Council", "Council", 1),
+(12, "Leadership Committee", "Leadership", 1);
 
 INSERT INTO user_groups
 (user_group_id, name)
@@ -69,8 +69,8 @@ VALUES
 (4, "Bike Works Committee"),
 (5, "Partners of BC");
 
-INSERT INTO user_groups_orgs
-(user_group_id, org_id)
+INSERT INTO user_groups_people_groups
+(user_group_id, people_group_id)
 VALUES
 (1, 1),
 (2, 12),
@@ -93,14 +93,14 @@ VALUES
 (3, 4);
 
 INSERT INTO roles
-(org_id, person_id, title, timestamp_start, timestamp_end)
+(people_group_id, person_id, title, timestamp_start, timestamp_end)
 VALUES
 (1, 1, "Programs Coordinator", '2015-06-18', NULL),
 (1, 2, "Instigator", '2013-10-05', NULL),
 (9, 3, "Lead Advocacy Organizer", '2014-09-28', NULL);
 
-INSERT INTO org_relationships
-(org1_id, org2_id, org_relationship_type_id)
+INSERT INTO people_group_relationships
+(people_group1_id, people_group2_id, people_group_relationship_type_id)
 VALUES
 (1, 9, 1),
 (2, 10, 1),
